@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 var express = require('express');
 var bodyParser = require('body-parser');
 var app = express();
@@ -7,7 +9,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
 app.get('/messenger_webhook', function (req, res) {
-	if (req.query['hub.verify_token'] === FB_VERIFY_TOKEN) {
+	if (req.query['hub.verify_token'] === process.env.FB_VERIFY_TOKEN) {
 		res.send(req.query['hub.challenge'])
 	} else {
     res.send('Error, wrong token')
@@ -28,7 +30,9 @@ app.post('/messenger_webhook', function (req, res) {
 var messenger_receive = function (event) {
   var token = event.message.text.trim();
   var mid = event.sender.id;
-  if (token.substring(0, TOKEN_PREFIX.length) == TOKEN_PREFIX) {
+  if (token.substring(
+    0, process.env.TOKEN_PREFIX.length
+  ) == process.env.TOKEN_PREFIX) {
     storage.get('token-to-sid', token, function (err, sid) {
       if (sid) {
         storage.set('mid-to-sid', mid, sid);
@@ -49,7 +53,7 @@ var messenger_send = function (userId, text) {
     uri: 'https://graph.facebook.com/v2.6/me/messages',
     method: 'POST',
     qs: {
-      'access_token': FB_ACCESS_TOKEN
+      'access_token': process.env.FB_ACCESS_TOKEN
     },
     json: {
       'recipient': {
@@ -63,6 +67,6 @@ var messenger_send = function (userId, text) {
   request(options);
 }
 
-app.listen(PORT, function() {
-  console.log("running at port " + PORT);
+app.listen(process.env.PORT, function() {
+  console.log("running at port " + process.env.PORT);
 });

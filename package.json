@@ -4,12 +4,14 @@
   "description": "Relay your Slack notifications to Messenger",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "config": "cp .env.config .env"
   },
   "author": "",
   "license": "MIT",
   "dependencies": {
     "body-parser": "^1.17.2",
+    "dotenv": "^5.0.0",
     "express": "^4.15.3",
     "rand-token": "^0.3.0",
     "redis": "^2.7.1",
