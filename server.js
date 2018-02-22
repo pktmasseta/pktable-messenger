@@ -31,7 +31,7 @@ app.post('/messenger_webhook', function (req, res) {
 var messenger_receive = function (event) {
   var userId = event.sender.id;
   var text = event.message.text;
-  messenger_send(userId, text);
+  messenger_broadcast(text);
 }
 
 var messenger_send = function (userId, text) {
@@ -61,23 +61,22 @@ var messenger_broadcast = function (text) {
       'access_token': process.env.FB_ACCESS_TOKEN
     },
     json: {
-      'messages': {
+      'messages': [{
         'text': text
-      }
+      }]
     }
-  }).on('response', function(response) {
-    console.log(response);
-    // var creativeId = response.body.message_creative_id;
-    // request({
-    //   uri: 'https://graph.facebook.com/v2.6/me/broadcast_messages',
-    //   method: 'POST',
-    //   qs: {
-    //     'access_token': process.env.FB_ACCESS_TOKEN
-    //   },
-    //   json: {
-    //     'message_creative_id': message_creative_id
-    //   }
-    // })
+  }, function(err, response, body) {
+    var creativeId = body.message_creative_id;
+    request({
+      uri: 'https://graph.facebook.com/v2.6/me/broadcast_messages',
+      method: 'POST',
+      qs: {
+        'access_token': process.env.FB_ACCESS_TOKEN
+      },
+      json: {
+        'message_creative_id': creativeId
+      }
+    })
   });
 }
 
