@@ -1,6 +1,7 @@
 require('dotenv').config();
 
 var express = require('express');
+var request = require('request');
 var bodyParser = require('body-parser');
 var app = express();
 var PORT = process.env.PORT || 8000;
@@ -9,9 +10,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
 app.get('/messenger_webhook', function (req, res) {
-	if (req.query['hub.verify_token'] === process.env.FB_VERIFY_TOKEN) {
-		res.send(req.query['hub.challenge'])
-	} else {
+  if (req.query['hub.verify_token'] === process.env.FB_VERIFY_TOKEN) {
+    res.send(req.query['hub.challenge'])
+  } else {
     res.send('Error, wrong token')
   }
 });
@@ -21,31 +22,14 @@ app.post('/messenger_webhook', function (req, res) {
   for (var i = 0; i < messaging_events.length; i++) {
     var event = messaging_events[i];
     if (event.message && event.message.text) {
-      controllers.messenger_receive(event);
+      messenger_receive(event);
     }
   }
   res.sendStatus(200);
 });
 
 var messenger_receive = function (event) {
-  var token = event.message.text.trim();
-  var mid = event.sender.id;
-  if (token.substring(
-    0, process.env.TOKEN_PREFIX.length
-  ) == process.env.TOKEN_PREFIX) {
-    storage.get('token-to-sid', token, function (err, sid) {
-      if (sid) {
-        storage.set('mid-to-sid', mid, sid);
-        storage.set('sid-to-mid', sid, mid);
-        storage.del('token-to-sid', token);
-        utils.messenger_send(mid, 'Awesome! You\'re all set up :)');
-      } else {
-        utils.messenger_send(mid, 'Invalid token--try a new one!');
-      }
-    });
-  } else {
-    utils.messenger_send(mid, 'Hello friend!');
-  }
+  console.log(event);
 }
 
 var messenger_send = function (userId, text) {
