@@ -29,7 +29,9 @@ app.post('/messenger_webhook', function (req, res) {
 });
 
 var messenger_receive = function (event) {
-  console.log(event);
+  var userId = event.sender.id;
+  var text = event.message.text;
+  messenger_send(userId, text);
 }
 
 var messenger_send = function (userId, text) {
