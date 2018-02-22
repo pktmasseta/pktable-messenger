@@ -2,9 +2,9 @@
   "name": "pktable-messenger",
   "version": "1.0.0",
   "description": "Relay your Slack notifications to Messenger",
-  "main": "app.js",
+  "main": "server.js",
   "scripts": {
-    "start": "node app.js"
+    "start": "node server.js"
   },
   "author": "",
   "license": "MIT",
