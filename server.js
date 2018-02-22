@@ -28,10 +28,17 @@ app.post('/messenger_webhook', function (req, res) {
   res.sendStatus(200);
 });
 
+var text_verify = function (text) {
+  return text.toLowerCase().startsWith(process.env.MESSAGE_PREFIX);
+}
+
 var messenger_receive = function (event) {
   var userId = event.sender.id;
   var text = event.message.text;
-  messenger_broadcast(text);
+  if (text_verify(text)) {
+    var text_content = event.message.text.substring(process.env.MESSAGE_PREFIX.length);
+    messenger_broadcast(process.env.BROADCAST_PREFIX + text_content);
+  }
 }
 
 var messenger_send = function (userId, text) {
