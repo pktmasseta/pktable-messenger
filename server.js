@@ -53,6 +53,34 @@ var messenger_send = function (userId, text) {
   request(options);
 }
 
+var messenger_broadcast = function (text) {
+  request({
+    uri: 'https://graph.facebook.com/v2.6/me/message_creatives',
+    method: 'POST',
+    qs: {
+      'access_token': process.env.FB_ACCESS_TOKEN
+    },
+    json: {
+      'messages': {
+        'text': text
+      }
+    }
+  }).on('response', function(response) {
+    console.log(response);
+    // var creativeId = response.body.message_creative_id;
+    // request({
+    //   uri: 'https://graph.facebook.com/v2.6/me/broadcast_messages',
+    //   method: 'POST',
+    //   qs: {
+    //     'access_token': process.env.FB_ACCESS_TOKEN
+    //   },
+    //   json: {
+    //     'message_creative_id': message_creative_id
+    //   }
+    // })
+  });
+}
+
 app.listen(process.env.PORT, function() {
   console.log("running at port " + process.env.PORT);
 });
