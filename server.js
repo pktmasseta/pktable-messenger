@@ -81,7 +81,9 @@ var messenger_broadcast = function (text) {
         'access_token': process.env.FB_ACCESS_TOKEN
       },
       json: {
-        'message_creative_id': creativeId
+        'message_creative_id': creativeId,
+        'tag': 'APPOINTMENT_UPDATE',
+        'notification_type': 'SILENT_PUSH'
       }
     })
   });
